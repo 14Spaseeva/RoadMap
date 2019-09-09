@@ -1,33 +1,52 @@
-import java.util.*;
+package data;
 
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * This class describes the city. Each city is represented as a node of a graph
+ */
 public class City {
 
     private final String     name;
     private final Coordinate coordinate;
 
-    private Set<Road> connections = new HashSet<>();
+    private Set<Road> roads = ConcurrentHashMap.newKeySet();
 
     public City(String name, int x, int y) {
         this.name = name;
         this.coordinate = new Coordinate(x, y);
     }
 
-    public void addConnection(Road road) {
-        if (this.connections.contains(road)) {
+    /**
+     * adds road to the city
+     *
+     * @param road to be connected to the city
+     */
+    public void addRoad(Road road) {
+        if (this.roads.contains(road)) {
             System.out.println("This edge has already been used for this node.");
         } else {
-            System.out.println("Successfully added " + road);
-            this.connections.add(road);
+            this.roads.add(road);
         }
-        //TODO add coordinate check
     }
 
-    public Set<Road> getConnections() {
-        return connections;
+    /**
+     * returns all roads belongs to the city
+     *
+     * @return Set
+     */
+    public Set<Road> getAllRoads() {
+        return roads;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
     }
 
     @Override
@@ -43,16 +62,6 @@ public class City {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    private class Coordinate {
-        int x;
-        int y;
-
-        Coordinate(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 
 }

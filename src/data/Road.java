@@ -1,3 +1,8 @@
+package data;
+
+/**
+ * This class describes the Road. Each road is represented as an edge of a graph.
+ */
 public class Road {
 
     private final String name;
@@ -5,11 +10,15 @@ public class Road {
     private final City   start;
     private final City   stop;
 
-    public Road(String name, double length, City start, City stop) {
+    public Road(String name, City start, City stop) {
+        this.length = Math.sqrt(
+                        Math.pow(start.getCoordinate().getX() - stop.getCoordinate().getX(), 2)
+                        + Math.pow(start.getCoordinate().getY() - stop.getCoordinate().getY(), 2)
+                       );
         this.name = name;
-        this.length = length;
         this.start = start;
         this.stop = stop;
+
     }
 
     public String getName() {

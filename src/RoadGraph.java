@@ -1,16 +1,29 @@
-import java.util.HashSet;
+import data.City;
+import data.Road;
+
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RoadGraph implements APIable {
 
-    private Set<City> vertices = new HashSet<>();
+    private Set<City> vertices = ConcurrentHashMap.newKeySet();
 
+    /**
+     * adds the city to the Road map
+     *
+     * @param city to be added
+     */
     @Override
     public void addCity(City city) {
         vertices.add(city);
     }
 
+    /**
+     * adds the road to the road map
+     *
+     * @param road to be added
+     */
     @Override
     public void addRoad(Road road) {
         addRoad(road.getStart(), road);
@@ -20,11 +33,16 @@ public class RoadGraph implements APIable {
     private void addRoad(City cityToUpdate, Road road) {
         Optional<City> city = vertices.stream().filter(c -> c.equals(cityToUpdate)).findFirst();
         if (city.isPresent())
-            city.get().getConnections().add(road);
+            city.get().addRoad(road);
         else
             throw new IllegalArgumentException("Attempting to connect nonexistent cities");
     }
 
+    /**
+     * deletes the road from the road map
+     *
+     * @param road to be deleted
+     */
     @Override
     public void deleteRoad(Road road) {
         deleteRoad(road.getStart(), road);
@@ -34,11 +52,18 @@ public class RoadGraph implements APIable {
     private void deleteRoad(City cityToUpdate, Road road) {
         Optional<City> city = vertices.stream().filter(c -> c.equals(cityToUpdate)).findFirst();
         if (city.isPresent())
-            city.get().getConnections().remove(road);
+            city.get().getAllRoads().remove(road);
         else
             throw new IllegalArgumentException("Attempting to connect nonexistent cities");
     }
 
+    /**
+     * returns the city by name
+     *
+     * @param cityName the city name
+     *
+     * @return city
+     */
     @Override
     public City getCity(String cityName) {
         return vertices.stream()
@@ -52,7 +77,7 @@ public class RoadGraph implements APIable {
         vertices.forEach(v ->
                          {
                              System.out.println(String.format("%nCity %s with roads : ", v.getName()));
-                             v.getConnections().forEach(c -> System.out.print(c.getName() + " "));
+                             v.getAllRoads().forEach(c -> System.out.print(String.format("%s (%s km), ", c.getName(), c.getLength())));
                          });
     }
 }
